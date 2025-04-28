@@ -43,10 +43,24 @@ export class Agent {
         }
         continue;
       }
-      // Otherwise, send to LLM (future: parse tool calls from LLM output)
+      // Enhanced: Send to LLM and parse for tool calls in the response
       const prompt = this.buildPrompt(userInput);
       const response = await this.llm.complete(prompt);
-      console.log("Agent:", response.trim());
+      // Educational callout: LLM is instructed to use 'TOOL_CALL: <tool_name> <args>' to invoke tools
+      const toolCallMatch = response.match(/TOOL_CALL:\s*(\w+)\s+([\s\S]*)/i);
+      if (toolCallMatch) {
+        const toolName = toolCallMatch[1];
+        const toolArgs = toolCallMatch[2];
+        const tool = this.tools.get(toolName);
+        if (!tool) {
+          console.log(`Agent: Tried to call unknown tool '${toolName}'.`);
+        } else {
+          const result = await tool.run(toolArgs);
+          console.log(`Tool result: ${result}`);
+        }
+      } else {
+        console.log("Agent:", response.trim());
+      }
     }
     rl.close();
     console.log("Goodbye!");
@@ -58,6 +72,7 @@ export class Agent {
    */
   buildPrompt(userInput: string): string {
     const toolList = this.tools.list().map(t => `- ${t.name}: ${t.description}`).join("\n");
-    return `You are an agent that can use tools.\nAvailable tools:\n${toolList}\n\nUser: ${userInput}\nAgent:`;
+    // Educational callout: Instruct the LLM to use TOOL_CALL format for tool invocation
+    return `You are an agent that can use tools.\nAvailable tools:\n${toolList}\n\nIf you want to use a tool, reply only with:\nTOOL_CALL: <tool_name> <arguments>\nOtherwise, reply as usual.\n\nUser: ${userInput}\nAgent:`;
   }
 }
