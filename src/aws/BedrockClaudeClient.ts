@@ -20,10 +20,14 @@ export class BedrockClaudeClient {
   }
 
   async complete(prompt: string, maxTokens: number = 1024): Promise<string> {
+    // Educational callout: Claude 3 on Bedrock requires the prompt to start and end with a double quote,
+    // and to use 'Human:' and 'Assistant:' role markers.
+    const formattedPrompt = `"Human: ${prompt}\n\nAssistant:"`;
     const body = JSON.stringify({
-      prompt,
+      prompt: formattedPrompt,
       max_tokens_to_sample: maxTokens,
-      stop_sequences: ["\nObservation:"],
+      // Optionally, adjust stop_sequences for your use case
+      stop_sequences: ["\nObservation:", "\nHuman:"],
     });
     const command = new InvokeModelCommand({
       modelId: this.modelId,
