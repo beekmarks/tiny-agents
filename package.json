@@ -1,0 +1,23 @@
+{
+  "name": "tiny-agents",
+  "version": "1.0.0",
+  "description": "Educational tiny agents app using Claude 3.7 on AWS Bedrock (TypeScript)",
+  "main": "dist/cli/index.js",
+  "scripts": {
+    "start": "ts-node src/cli/index.ts",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.538.0",
+    "@aws-sdk/credential-providers": "^3.538.0",
+    "dotenv": "^16.3.1",
+    "playwright": "^1.52.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "eslint": "^8.57.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
