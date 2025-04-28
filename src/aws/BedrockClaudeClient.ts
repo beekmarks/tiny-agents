@@ -21,9 +21,8 @@ export class BedrockClaudeClient {
 
   async complete(prompt: string, maxTokens: number = 1024): Promise<string> {
     // Remove any accidental leading/trailing whitespace from the prompt
-    const cleanPrompt = prompt.trim();
-    // Format for Claude 3 on Bedrock: must start with a double quote and 'Human:' and only one 'Assistant:' at the end.
-    const formattedPrompt = `"Human: ${cleanPrompt}\n\nAssistant:"`;
+    // TEMPORARY: Test with the absolute minimal valid prompt to isolate errors
+    const formattedPrompt = `"Human: Hello\n\nAssistant:"`;
     // Debug log to verify prompt formatting
     console.log("DEBUG - Prompt sent to Bedrock:", formattedPrompt);
     const body = JSON.stringify({
