@@ -71,8 +71,10 @@ export class Agent {
    * Educational callout: In a full agent, this would include tool descriptions and previous conversation.
    */
   buildPrompt(userInput: string): string {
-    const toolList = this.tools.list().map(t => `- ${t.name}: ${t.description}`).join("\n");
-    // Educational callout: Instruct the LLM to use TOOL_CALL format for tool invocation
-    return `You are an agent that can use tools.\nAvailable tools:\n${toolList}\n\nIf you want to use a tool, reply only with:\nTOOL_CALL: <tool_name> <arguments>\nOtherwise, reply as usual.\n\nUser: ${userInput}\nAgent:`;
+    const toolList = this.tools.list().map(
+      t => `- ${t.name}: ${t.description}`
+    ).join("\n");
+    // Educational callout: Do NOT include 'User:' or 'Agent:' role markers for Claude 3 on Bedrock. Only one 'Human:' at the start and one 'Assistant:' at the end.
+    return `You are an agent that can use tools.\nAvailable tools:\n${toolList}\n\nIf you want to use a tool, reply only with:\nTOOL_CALL: <tool_name> <arguments>\nOtherwise, reply as usual.\n\n${userInput}`;
   }
 }
